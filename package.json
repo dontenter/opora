@@ -1,1 +1,22 @@
-{"name":"opora-workout","version":"1.0.0","private":true,"type":"module","scripts":{"dev":"node server.mjs","start":"node server.mjs","build":"node --check dist/app.js"},"engines":{"node":">=18"}}
+{
+  "name": "opora-workout",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "npm run build && node server.mjs",
+    "start": "node server.mjs",
+    "build": "node --check dist/app.js && node scripts/build.mjs",
+    "test": "node --test tests/*.test.js"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.116.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.2",
+    "jsdom": "^29.1.1"
+  }
+}
