@@ -7,10 +7,10 @@ await ready;
 const store=window.opora;
 let engine=null,user=null,client=null,timer=null,epoch=0;
 function status(kind,error){
-  const messages={syncing:'Синхронизация…',synced:'Сохранено в облаке',pending:'Изменения ждут отправки',conflict:'Нужно выбрать версию тренировки',error:'Не удалось синхронизировать. Записи остаются на устройстве. Повторим при восстановлении связи.'};
+  const messages={syncing:'Syncing…',synced:'Saved to cloud',pending:'Changes waiting to sync',conflict:'Choose which workout version to keep',error:'Unable to sync. Your records remain on this device. We will retry when the connection returns.'};
   $('sync-status').textContent=messages[kind] || kind;
-  if(!store.storageAvailable())$('sync-status').textContent+=' Хранилище браузера недоступно. Не закрывай страницу до сохранения в облаке.';
-  if(error?.code==='PGRST205'||error?.code==='42P01'||error?.code==='PGRST202')$('sync-status').textContent='Таблица Supabase ещё не настроена. Записи остаются на устройстве.';
+  if(!store.storageAvailable())$('sync-status').textContent+=' Browser storage is unavailable. Keep this page open until your changes are saved to the cloud.';
+  if(error?.code==='PGRST205'||error?.code==='42P01'||error?.code==='PGRST202')$('sync-status').textContent='Cloud storage is not set up yet. Your records remain on this device.';
 }
 function changed(){
   if(!engine)return;
@@ -24,9 +24,9 @@ function account(next){
   store.switchAccount(user?.id);
   $('open-auth').hidden=!!user;$('sync-now').hidden=!user;$('sign-out').hidden=!user;
   $('conflict-box').hidden=true;
-  $('account-label').textContent=user?user.email:'Тренировки на этом устройстве';
+  $('account-label').textContent=user?user.email:'Workouts on this device';
   $('import-box').hidden=!user||!hasRecords(store.guest())||!!store.meta().guestImported;
-  if(!user){status('Войди, чтобы сохранять в облаке.');return;}
+  if(!user){status('Sign in to save your workouts to the cloud.');return;}
   const id=user.id,ownEpoch=epoch;
   engine=new SyncEngine({store,status,conflict:show=>$('conflict-box').hidden=!show,transport:{
     async read(){const {data,error}=await client.from('opora_training').select('data,revision').eq('user_id',id).maybeSingle();if(error)throw error;return data;},
@@ -51,20 +51,20 @@ $('import-local').addEventListener('click',async()=>{
 $('sign-out').addEventListener('click',async()=>{
   $('sign-out').disabled=true;
   try{await engine?.run();const {error}=await client.auth.signOut({scope:'local'});if(error)throw error;account(null);}
-  catch{status('Не удалось выйти. Попробуй ещё раз.');}
+  catch{status('Unable to sign out. Please try again.');}
   finally{$('sign-out').disabled=false;}
 });
 $('auth-form').addEventListener('submit',async event=>{
   event.preventDefault();if(!client)return;
-  $('send-link').disabled=true;$('auth-status').textContent='Отправляем письмо…';
+  $('send-link').disabled=true;$('auth-status').textContent='Sending your email…';
   try{
     const {error}=await client.auth.signInWithOtp({email:$('auth-email').value.trim(),options:{emailRedirectTo:new URL('/',location.href).href}});
     if(error)throw error;
-    $('auth-status').textContent='Проверь почту и папку «Спам». Открой ссылку из письма, чтобы войти. Если письмо не приходит, проверь адрес и настройки почты Supabase.';
-  }catch(error){$('auth-status').textContent=error?.status===429?'Слишком много запросов. Подожди минуту и попробуй снова.':'Не удалось отправить письмо. Проверь подключение и адрес. Владелец проекта также должен настроить отправку писем в Supabase.';}
+    $('auth-status').textContent='Check your inbox and spam folder. Open the email link to sign in. If it does not arrive, check your address and the Supabase email settings.';
+  }catch(error){$('auth-status').textContent=error?.status===429?'Too many requests. Wait a minute and try again.':'Unable to send the email. Check your connection and email address. The project owner may also need to configure email delivery in Supabase.';}
   finally{$('send-link').disabled=false;}
 });
-if(!__SUPABASE_KEY__){status('Облачное сохранение ещё не настроено. Доступен локальный режим.');$('open-auth').disabled=true;}
+if(!__SUPABASE_KEY__){status('Cloud sync is not set up yet. Local mode is available.');$('open-auth').disabled=true;}
 else {
   try {
     client=createClient(__SUPABASE_URL__,__SUPABASE_KEY__);
@@ -73,5 +73,5 @@ else {
     window.addEventListener('online',()=>engine?.run());
     window.addEventListener('focus',()=>engine?.run());
     setInterval(()=>{if(document.visibilityState==='visible'&&navigator.onLine)engine?.run();},30000);
-  }catch{status('Не удалось подключиться к аккаунту. Локальные тренировки доступны.');}
+  }catch{status('Unable to connect to your account. Local workouts are still available.');}
 }

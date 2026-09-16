@@ -23,3 +23,16 @@ export function combineImport(local, remote) {
   result.history.sort((a,b)=>b.finishedAt.localeCompare(a.finishedAt));
   return result;
 }
+
+// Imported snapshots are recovery copies, not completed training sessions.
+export function previousWorkout(history, workout) {
+  return (Array.isArray(history)?history:[])
+    .filter(item=>item.workout===workout&&!item.imported&&Number.isFinite(Date.parse(item.finishedAt))&&Object.values(item.session?.exercises || {}).some(e=>(e.sets || []).some(set=>set.done)))
+    .slice().sort((a,b)=>Date.parse(b.finishedAt)-Date.parse(a.finishedAt))[0] || null;
+}
+export function formatSet(set, exercise={}) {
+  const weight=set.weight!==''&&set.weight!=null?`${set.weight} kg`:'weight not recorded';
+  const unit=exercise.unit || 'reps';
+  const value=v=>v!==''&&v!=null?String(v):'not recorded';
+  return exercise.side?`${weight} × L ${value(set.left)} / R ${value(set.right)} ${unit}`:`${weight} × ${value(set.reps)} ${unit}`;
+}

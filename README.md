@@ -1,56 +1,63 @@
-# Опора
+# Opora
 
-Три тренировки в неделю, дневник подходов, таймер, история и синхронизация через Supabase. Интерфейс адаптирован для телефона.
+Three workouts per week with set tracking, rest timer, workout history and private Supabase sync. The interface is in English and designed for phones.
 
-## Запуск
+## Run locally
 
-Node.js 22+:
+Requires Node.js 22 or later:
 
 ```sh
 npm ci
 npm run dev
 ```
 
-Откройте http://localhost:4173. Проверки: `npm test`. Сборка: `npm run build`.
+Open http://localhost:4173. Run checks with `npm test` and build with `npm run build`.
+
+## Previous workouts
+
+- Check off the sets you complete. At the end of your session, select **Finish & save workout**. This archives the session and starts a fresh one, keeping your weights and reps as editable defaults.
+- Each exercise has a **Last time** panel showing the date and checked sets from your most recent saved session of the same workout (A, B or C). It shows weight, reps or seconds, and left/right values where relevant. Unchecked sets are not presented as completed results.
+- **View history** jumps to the full history. Filter by workout and open a session to view every exercise and its notes.
+- Imported or conflict-recovery copies remain in history but do not become the automatic previous-workout comparison. If the last saved session did not include a particular exercise, its card says so instead of silently showing an older session.
+- Existing records and personal notes are preserved. The interface translation does not modify notes entered by the user.
 
 ## Vercel
 
-Репозиторий: `dontenter/opora`, production branch `main`. Framework: Other. Build command: `npm run build`, output directory: `dist`. Конфигурация находится в `vercel.json`. Vercel устанавливает зависимости из `package-lock.json`.
+Repository: `dontenter/opora`, production branch: `main`. Framework: Other. Build command: `npm run build`. Output directory: `dist`. Configuration lives in `vercel.json`; dependencies are locked in `package-lock.json`.
 
-Публичный адрес: https://opora-snowy.vercel.app/
+Production: https://opora-snowy.vercel.app/
 
 ## Supabase
 
-Используется проект `mjbqqvygyixuuvijtmar`. `src/public-config.json` содержит URL и **publishable key**, предназначенный для браузера. Этот ключ не даёт доступ к чужим данным: авторизация выполняется серверными RLS-политиками. Secret/service-role ключи в клиенте и репозитории недопустимы.
+Project: `mjbqqvygyixuuvijtmar`. `src/public-config.json` contains the project URL and browser-safe **publishable key**. Server-side RLS policies enforce access to each user's records. Never include secret or service-role keys in browser code or this repository.
 
-При необходимости публичную конфигурацию можно переопределить переменными `SUPABASE_URL` и `SUPABASE_PUBLISHABLE_KEY` в Vercel или `.env.local` (пример в `.env.example`). После изменения конфигурации нужна новая сборка.
+Override public settings with `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY` in Vercel or `.env.local` if needed; see `.env.example`. Rebuild after configuration changes.
 
-1. Выполнить `supabase/migrations/202609160001_opora.sql` в SQL Editor. Пользователь уже выполнил начальную версию. Файл допускает повторное применение через GitHub integration без пересоздания данных. Он создаёт только таблицу `opora_training`, её политики и функцию `opora_save`.
-2. Authentication → URL Configuration: Site URL `https://opora-snowy.vercel.app/`; Redirect URLs содержат этот адрес и `http://localhost:4173/`.
-3. Email provider должен быть включён. Вход через `signInWithOtp` отправляет magic link из стандартного шаблона Supabase. Откройте письмо в браузере, где хотите пользоваться сайтом.
-4. Если шаблон Magic Link был вручную заменён на числовой код, верните ссылку `{{ .ConfirmationURL }}`. Сайт использует вход по ссылке.
-5. Для доставки писем произвольным адресатам настройте собственный SMTP в Supabase. Встроенная почта Supabase имеет ограничения, в том числе на адресатов и частоту отправки. Проверить доставку можно реальным входом; секреты SMTP задаются только в Supabase, не в репозитории.
+1. Apply `supabase/migrations/202609160001_opora.sql` in SQL Editor. The owner has already applied the initial version. The migration can be reapplied by the GitHub integration without recreating existing data. It creates the `opora_training` table, its RLS policies and the `opora_save` function.
+2. Authentication → URL Configuration: set Site URL to `https://opora-snowy.vercel.app/`. Include that URL and `http://localhost:4173/` in Redirect URLs.
+3. Enable the Email provider. Sign-in uses `signInWithOtp` and the standard Supabase magic-link email. Open the email in the browser where you want to sign in.
+4. If the Magic Link template was changed to send a numeric code, restore a link using `{{ .ConfirmationURL }}`. This app uses links rather than numeric codes.
+5. Configure custom SMTP in Supabase for reliable delivery to arbitrary recipients. Supabase's built-in email service restricts recipients and send frequency. Store SMTP secrets only in Supabase. Email delivery must be verified by signing in with a real address.
 
-## Данные и доступ
+## Data and privacy
 
-- Без входа используется прежний `localStorage` (`opora-training-v1`). При входе эти данные не отправляются автоматически. Отдельная кнопка импортирует локальные записи в историю аккаунта, сохраняя текущие облачные тренировки.
-- После входа текущие A/B/C и история хранятся в одной JSONB-записи `opora_training` на пользователя. В ней содержатся веса, повторы, отметки, заметки и оценки боли. RLS допускает чтение и запись только при `auth.uid() = user_id`. Анонимный доступ запрещён.
-- На устройстве остаётся отдельный кэш для каждого аккаунта. Изменения сначала сохраняются локально, затем отправляются в Supabase. Таймер и выбранная вкладка остаются локальными.
-- Синхронизация запускается после правок, при возвращении к окну, восстановлении сети, вручную и каждые 30 секунд в видимой вкладке. Сохранение подтверждается текстом «Сохранено в облаке».
-- Если два устройства изменили данные независимо, номер версии предотвращает молчаливую перезапись. Пользователь выбирает текущую версию, а альтернативные записи попадают в историю как сохранённые копии.
-- «Завершить и начать следующую» архивирует занятие, очищает отметки и заметки в новой тренировке, сохраняет рабочие веса и повторы.
-- При выходе отображается локальный дневник без аккаунта. Кэш аккаунта сохраняется для следующего входа, включая неотправленные правки. На общем устройстве следует очищать данные сайта только после синхронизации.
-- Очистка браузера до отправки в облако удалит неотправленные изменения. Полноценный офлайн-запуск страницы не реализован: при потере связи работает уже открытая страница. Данные localhost и Vercel до входа независимы.
-- История хранится одним документом, поэтому для многолетнего объёма может понадобиться отдельная таблица с постраничной загрузкой.
+- Before sign-in, records use the original `localStorage` key, `opora-training-v1`. They are not uploaded automatically. The import button adds them to account history without replacing current cloud workouts.
+- After sign-in, current A/B/C sessions and history are stored as one JSONB document per user in `opora_training`. This includes weights, reps, completion marks, notes and pain ratings. RLS requires `auth.uid() = user_id`. Anonymous reads and writes are denied.
+- Each account has a separate local cache. Edits are saved locally first and then synced. Rest timer state and the selected workout stay on the device.
+- Sync runs after edits, when the window regains focus, when connectivity returns, manually, and every 30 seconds while visible. **Saved to cloud** confirms completion.
+- Revision checks prevent a stale device from silently overwriting newer cloud data. If versions conflict, choose which current version to keep; the alternative is preserved in history as a saved copy.
+- Signing out returns to the local guest diary. Account caches, including unsent edits, remain for the next sign-in. On shared devices, clear browser data only after syncing.
+- Clearing browser data before sync loses unsent changes. An already-open page works during a connection loss; full offline page startup is not implemented. Localhost and production guest data are independent.
+- History is stored in one document. A separate paginated table may be appropriate for many years of records.
 
-## Проверки
+## Verification
 
-`npm test` проверяет историю, сохранение форм, переключение дней, разделение аккаунтов, поведение без сети, конфликт версий и изменения во время запроса. Сборка включает локальную копию официального Supabase SDK, загрузка JavaScript с внешнего CDN не требуется. Полный вход по письму проверяется владельцем адреса; тесты не отправляют письма и не создают пользователей.
+`npm test` covers form persistence, workout switching, archives, prior-session comparisons, time and side units, account separation, offline errors, conflicting revisions and edits during a request. The official Supabase SDK is bundled locally. Tests do not send emails or create users. A full email sign-in requires the address owner's participation.
 
-## Программа
+## Training plan
 
-Программа A/B/C восстановлена из исходного чата. Для диапазонов 2–3 подхода выбран нижний объём. Для односторонних упражнений повторы или секунды вводятся отдельно слева и справа. Вес гантелей записывается за одну гантель, блока или тренажёра согласно его шкале.
+Workouts A/B/C are based on the original conversation. Where the original plan specified 2–3 sets, the lower volume is used. For unilateral exercises, record each side separately. Record dumbbell weights per dumbbell and machine/cable weights according to the equipment's scale.
 
-Это не медицинская рекомендация и не программа коррекции сколиоза. Программу при сколиозе, хронической боли и упомянутом CIDP следует согласовать со специалистом. При усилении симптомов остановиться и обратиться к специалисту.
+This is not medical advice or a scoliosis correction plan. Discuss exercises and loads with a clinician given scoliosis, chronic pain and the CIDP mentioned in the conversation. Stop and seek professional advice if symptoms worsen.
 
-Источник: https://www.nhs.uk/conditions/scoliosis/treatment-in-adults/
+Reference: https://www.nhs.uk/conditions/scoliosis/treatment-in-adults/
