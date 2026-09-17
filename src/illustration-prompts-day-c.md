@@ -1,0 +1,11 @@
+# Workout C illustrations
+
+Generated with the built-in image generation tool. Files: dist/images/neutral-grip-lat-pulldown.png and dist/images/single-arm-lat-pulldown.png.
+
+## Neutral-grip lat pulldown
+
+Educational gym exercise illustration for dark green Opora app, landscape 3:2. Two separate full-body three-quarter side views of same adult male grey T-shirt dark shorts trainers demonstrating NEUTRAL-GRIP LAT PULLDOWN seated at a high cable machine. Both views same machine and camera scale: seated on bench, feet grounded, thighs secured under horizontal thigh pads, overhead cable connects to a compact parallel-grip handle held with palms facing each other. Left: arms extended overhead without hyperextension, neutral spine. Right: handle pulled to upper chest in front of body, elbows down alongside torso, small natural backward torso inclination, no behind-neck pull. Cable and handle clearly visible, realistic simple machine structure, anatomically correct hands and two arms per figure. Polished semi-realistic 3D style, dark green #1c221f backdrop, subtle shadows, charcoal machine with small lime #c5f477 accents, whole figures in frame. No text labels logos arrows muscle diagrams or medical claims.
+
+## Single-arm lat pulldown
+
+Educational gym exercise illustration for dark green Opora app, landscape 3:2. Two separate full-body three-quarter views of same adult male grey T-shirt dark shorts trainers demonstrating SINGLE-ARM LAT PULLDOWN at high cable machine. Both views seated with feet planted, thighs secured under padded support, same posture and machine. Working RIGHT hand grips a SINGLE D-handle attached by taut cable to pulley directly overhead; other left hand rests on left thigh. Left: working arm reaches overhead, elbow nearly extended. Right: working elbow pulled down alongside ribs and D-handle near right shoulder/upper chest. Torso stays upright and stable without rotation or side bend. Clearly show only ONE working arm and one cable, other hand on thigh in both views. Realistic simple machine, clear visible cable grip and elbow path, accurate anatomy exactly two arms per figure. Polished semi-realistic 3D style, dark green #1c221f backdrop, soft shadows, charcoal machine small lime #c5f477 accents, full bodies visible and equal camera scale. No text labels logos arrows muscle diagrams or medical claims.
