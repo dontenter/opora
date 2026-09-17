@@ -121,17 +121,19 @@ window.opora={
 window.dispatchEvent(new Event('opora:ready'));
 
 function exerciseIllustration(index){
-  if(!((state.active==='B'&&index<4)||(state.active==='C'&&index<2)))return null;
+  if(!((state.active==='B'&&index<4)||(state.active==='C'&&index<4)))return null;
   const figure=document.createElement('figure');figure.className='exercise-illustration';
   const img=document.createElement('img');img.src=['images/goblet-squat.png','images/bulgarian-split-squat.png','images/hip-thrust.png','images/lying-leg-curl.png'][index];
   img.alt=index===0?'Goblet squat: standing with a dumbbell at chest height, then lowering into a squat with heels grounded.':'Supported Bulgarian split squat: rear foot on a bench, front foot grounded, one hand holding a rack; top and lowered positions.';
   if(index===2)img.alt='Unweighted hip thrust: upper back supported on a bench, feet grounded; hips lowered, then lifted in line with shoulders and knees.';
   if(index===3)img.alt='Lying leg curl: thighs supported on the bench, roller against the back of the ankles; legs extended, then knees bent to lift the heels.';
-  if(state.active==='C'){img.src=['images/neutral-grip-lat-pulldown.png','images/single-arm-lat-pulldown.png'][index];img.alt=index===0?'Neutral-grip lat pulldown: arms extended overhead, then the parallel handle pulled toward the upper chest.':'Single-arm lat pulldown: one hand holding an overhead cable handle, then the elbow pulled down alongside the ribs; the other hand rests on the thigh.';}
+  if(state.active==='C'){img.src=['images/neutral-grip-lat-pulldown.png','images/single-arm-lat-pulldown.png','images/flat-dumbbell-press.png','images/seated-cable-row.png'][index];img.alt=index===0?'Neutral-grip lat pulldown: arms extended overhead, then the parallel handle pulled toward the upper chest.':'Single-arm lat pulldown: one hand holding an overhead cable handle, then the elbow pulled down alongside the ribs; the other hand rests on the thigh.';}
+  if(state.active==='C'&&index===2)img.alt='Flat dumbbell press: lying on a flat bench with feet grounded, dumbbells beside the chest, then pressed upward over the chest.';
+  if(state.active==='C'&&index===3)img.alt='Seated cable row: feet on footplates and torso upright, arms extended, then the neutral-grip handle pulled toward the lower ribs.';
   img.width=1536;img.height=1024;img.loading='lazy';img.decoding='async';
   const caption=document.createElement('figcaption');
   const start=document.createElement('span');start.textContent='1 · Start';
-  const lower=document.createElement('span');lower.textContent=state.active==='C'?'2 · Pull down with control':index===2?'2 · Lift your hips':index===3?'2 · Curl your legs':'2 · Lower with control';
+  const lower=document.createElement('span');lower.textContent=state.active==='C'?(index===2?'2 · Press up':index===3?'2 · Pull toward your torso':'2 · Pull down with control'):index===2?'2 · Lift your hips':index===3?'2 · Curl your legs':'2 · Lower with control';
   caption.append(start,lower);figure.append(img,caption);
   return figure;
 }
