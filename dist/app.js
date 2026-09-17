@@ -117,14 +117,16 @@ window.opora={
 window.dispatchEvent(new Event('opora:ready'));
 
 function exerciseIllustration(index){
-  if(state.active!=='B'||index>1)return null;
+  if(state.active!=='B'||index>3)return null;
   const figure=document.createElement('figure');figure.className='exercise-illustration';
-  const img=document.createElement('img');img.src=index===0?'images/goblet-squat.png':'images/bulgarian-split-squat.png';
+  const img=document.createElement('img');img.src=['images/goblet-squat.png','images/bulgarian-split-squat.png','images/hip-thrust.png','images/lying-leg-curl.png'][index];
   img.alt=index===0?'Goblet squat: standing with a dumbbell at chest height, then lowering into a squat with heels grounded.':'Supported Bulgarian split squat: rear foot on a bench, front foot grounded, one hand holding a rack; top and lowered positions.';
+  if(index===2)img.alt='Unweighted hip thrust: upper back supported on a bench, feet grounded; hips lowered, then lifted in line with shoulders and knees.';
+  if(index===3)img.alt='Lying leg curl: thighs supported on the bench, roller against the back of the ankles; legs extended, then knees bent to lift the heels.';
   img.width=1536;img.height=1024;img.loading='lazy';img.decoding='async';
   const caption=document.createElement('figcaption');
   const start=document.createElement('span');start.textContent='1 · Start';
-  const lower=document.createElement('span');lower.textContent='2 · Lower with control';
+  const lower=document.createElement('span');lower.textContent=index===2?'2 · Lift your hips':index===3?'2 · Curl your legs':'2 · Lower with control';
   caption.append(start,lower);figure.append(img,caption);
   return figure;
 }
