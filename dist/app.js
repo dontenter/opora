@@ -121,7 +121,7 @@ window.opora={
 window.dispatchEvent(new Event('opora:ready'));
 
 function exerciseIllustration(index){
-  if(!((state.active==='A'&&index<4)||(state.active==='B'&&index<4)||(state.active==='C'&&index<8)))return null;
+  if(!((state.active==='A'&&index<6)||(state.active==='B'&&index<4)||(state.active==='C'&&index<8)))return null;
   const figure=document.createElement('figure');figure.className='exercise-illustration';
   const img=document.createElement('img');img.src=['images/goblet-squat.png','images/bulgarian-split-squat.png','images/hip-thrust.png','images/lying-leg-curl.png'][index];
   img.alt=index===0?'Goblet squat: standing with a dumbbell at chest height, then lowering into a squat with heels grounded.':'Supported Bulgarian split squat: rear foot on a bench, front foot grounded, one hand holding a rack; top and lowered positions.';
@@ -135,15 +135,17 @@ function exerciseIllustration(index){
   if(state.active==='C'&&index===6)img.alt='Dumbbell lateral raise: weights by the sides, then arms raised outward to shoulder height with soft elbows and relaxed shoulders.';
   if(state.active==='C'&&index===7)img.alt='Dumbbell biceps curl: arms down with palms forward, then elbows bent to bring the weights toward the shoulders while keeping the torso still.';
   if(state.active==='A'){
-    img.src=['images/chest-supported-row.png','images/incline-dumbbell-press.png','images/single-arm-seated-cable-row.png','images/machine-chest-press.png'][index];
+    img.src=['images/chest-supported-row.png','images/incline-dumbbell-press.png','images/single-arm-seated-cable-row.png','images/machine-chest-press.png','images/face-pull.png','images/reverse-fly.png'][index];
     img.alt=index===0?'Chest-supported dumbbell row: chest supported on an inclined bench, arms hanging down, then dumbbells pulled toward the ribs.':'Incline dumbbell press: back supported on an inclined bench, dumbbells beside the upper chest, then pressed upward.';
   }
   if(state.active==='A'&&index===2)img.alt='Single-arm seated cable row: torso upright, one arm extended toward the pulley, then the handle pulled toward the ribs while the other hand rests on the thigh.';
   if(state.active==='A'&&index===3)img.alt='Machine chest press: back supported and feet grounded, handles beside the chest, then pressed forward with both arms.';
+  if(state.active==='A'&&index===4)img.alt='Rope face pull: arms extended toward an eye-height pulley, then rope ends pulled apart toward either side of the face.';
+  if(state.active==='A'&&index===5)img.alt='Machine reverse fly: chest supported against the pad, arms reaching forward, then opened to the sides with softly bent elbows.';
   img.width=1536;img.height=1024;img.loading='lazy';img.decoding='async';
   const caption=document.createElement('figcaption');
   const start=document.createElement('span');start.textContent='1 · Start';
-  const lower=document.createElement('span');lower.textContent=state.active==='A'?(index===0||index===2?'2 · Pull toward your ribs':index===3?'2 · Press forward':'2 · Press up'):state.active==='C'?(index===2?'2 · Press up':index===3?'2 · Pull toward your torso':index===4?'2 · Bring hands together':index===5?'2 · Pull toward your face':index===6?'2 · Raise to the sides':index===7?'2 · Curl with control':'2 · Pull down with control'):index===2?'2 · Lift your hips':index===3?'2 · Curl your legs':'2 · Lower with control';
+  const lower=document.createElement('span');lower.textContent=state.active==='A'?(index===0||index===2?'2 · Pull toward your ribs':index===3?'2 · Press forward':index===4?'2 · Pull toward your face':index===5?'2 · Open arms to the sides':'2 · Press up'):state.active==='C'?(index===2?'2 · Press up':index===3?'2 · Pull toward your torso':index===4?'2 · Bring hands together':index===5?'2 · Pull toward your face':index===6?'2 · Raise to the sides':index===7?'2 · Curl with control':'2 · Pull down with control'):index===2?'2 · Lift your hips':index===3?'2 · Curl your legs':'2 · Lower with control';
   caption.append(start,lower);figure.append(img,caption);
   return figure;
 }

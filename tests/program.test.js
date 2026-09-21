@@ -17,12 +17,12 @@ test('removing shoulder press preserves original keys and historical names',asyn
  for(let i=0;i<8;i++){const fig=context.exerciseIllustration(i);const img=fig.children[0];assert.match(img.src,/lat-pulldown|flat-dumbbell-press|seated-cable-row|cable-fly|face-pull|lateral-raise|biceps-curl/);await readFile(new URL('../dist/'+img.src,import.meta.url));assert.match(fig.children[1].children[1].textContent,i===2?/Press up/:i===3?/Pull toward/:i===4?/Bring hands/:i===5?/Pull toward your face/:i===6?/Raise to the sides/:i===7?/Curl with control/:/Pull down/);}
  assert.equal(context.exerciseIllustration(8),null);
  context.state.active='A';
- for(const [i,name] of ['chest-supported-row','incline-dumbbell-press','single-arm-seated-cable-row','machine-chest-press'].entries()){
+ for(const [i,name] of ['chest-supported-row','incline-dumbbell-press','single-arm-seated-cable-row','machine-chest-press','face-pull','reverse-fly'].entries()){
   const fig=context.exerciseIllustration(i);
   assert.equal(fig.children[0].src,'images/'+name+'.png');
   await readFile(new URL('../dist/'+fig.children[0].src,import.meta.url));
-  assert.match(fig.children[1].children[1].textContent,i===0||i===2?/Pull toward your ribs/:i===3?/Press forward/:/Press up/);
+  assert.match(fig.children[1].children[1].textContent,i===0||i===2?/Pull toward your ribs/:i===3?/Press forward/:i===4?/Pull toward your face/:i===5?/Open arms/:/Press up/);
  }
- assert.equal(context.exerciseIllustration(4),null);
+ assert.equal(context.exerciseIllustration(6),null);
  const html=await readFile(new URL('../dist/index.html',import.meta.url),'utf8');assert.match(html,/<small>Friday<\/small>/);assert.doesNotMatch(html,/Saturday/);
 });
