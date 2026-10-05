@@ -24,5 +24,14 @@ test('removing shoulder press preserves original keys and historical names',asyn
   assert.match(fig.children[1].children[1].textContent,i===0||i===2?/Pull toward your ribs/:i===3?/Press forward/:i===4?/Pull toward your face/:i===5?/Open arms/:i===6?/Press forward and hold/:i===7?/Curl with control/:i===8?/Extend your elbows/:/Press up/);
  }
  assert.equal(context.exerciseIllustration(9),null);
+ context.state.active='B';
+ for(const [offset,name] of ['lateral-raise','cable-y-raise','dead-bug','side-plank'].entries()){
+  const fig=context.exerciseIllustration(offset+5);
+  assert.equal(fig.children[0].src,'images/'+name+'.png');
+  await readFile(new URL('../dist/'+fig.children[0].src,import.meta.url));
+  assert.equal(fig.children[1].children[1].textContent,['2 · Raise to the sides','2 · Raise into a Y','2 · Extend opposite arm and leg','2 · Lift and hold'][offset]);
+ }
+ assert.equal(context.exerciseIllustration(4),null);
+ assert.equal(context.exerciseIllustration(9),null);
  const html=await readFile(new URL('../dist/index.html',import.meta.url),'utf8');assert.match(html,/<small>Friday<\/small>/);assert.doesNotMatch(html,/Saturday/);
 });

@@ -121,7 +121,7 @@ window.opora={
 window.dispatchEvent(new Event('opora:ready'));
 
 function exerciseIllustration(index){
-  if(!((state.active==='A'&&index<9)||(state.active==='B'&&index<4)||(state.active==='C'&&index<8)))return null;
+  if(!((state.active==='A'&&index<9)||(state.active==='B'&&index>=0&&index<9&&index!==4)||(state.active==='C'&&index<8)))return null;
   const figure=document.createElement('figure');figure.className='exercise-illustration';
   const img=document.createElement('img');img.src=['images/goblet-squat.png','images/bulgarian-split-squat.png','images/hip-thrust.png','images/lying-leg-curl.png'][index];
   img.alt=index===0?'Goblet squat: standing with a dumbbell at chest height, then lowering into a squat with heels grounded.':'Supported Bulgarian split squat: rear foot on a bench, front foot grounded, one hand holding a rack; top and lowered positions.';
@@ -145,10 +145,20 @@ function exerciseIllustration(index){
   if(state.active==='A'&&index===6)img.alt='Pallof press: standing sideways to the cable, hands at the chest, then pressed forward while keeping the torso still.';
   if(state.active==='A'&&index===7)img.alt='Dumbbell curl: weights at the sides, then curled toward the shoulders with elbows close to the torso.';
   if(state.active==='A'&&index===8)img.alt='Cable triceps pushdown: elbows bent beside the ribs, then arms extended to lower the rope toward the thighs.';
+  if(state.active==='B'&&index>=5){
+    img.src=['images/lateral-raise.png','images/cable-y-raise.png','images/dead-bug.png','images/side-plank.png'][index-5];
+    img.alt=[
+      'Dumbbell lateral raise: weights at the sides, then arms raised outward with soft elbows.',
+      'Cable Y-raise: handles low in front of the thighs, then arms raised diagonally into a Y.',
+      'Dead bug: lying on the back with arms raised and knees bent, then extending the opposite arm and leg.',
+      'Side plank: forearm under the shoulder and feet stacked, then hips lifted to align the body.'
+    ][index-5];
+  }
   img.width=1536;img.height=1024;img.loading='lazy';img.decoding='async';
   const caption=document.createElement('figcaption');
   const start=document.createElement('span');start.textContent='1 · Start';
   const lower=document.createElement('span');lower.textContent=state.active==='A'?(index===0||index===2?'2 · Pull toward your ribs':index===3?'2 · Press forward':index===4?'2 · Pull toward your face':index===5?'2 · Open arms to the sides':index===6?'2 · Press forward and hold':index===7?'2 · Curl with control':index===8?'2 · Extend your elbows':'2 · Press up'):state.active==='C'?(index===2?'2 · Press up':index===3?'2 · Pull toward your torso':index===4?'2 · Bring hands together':index===5?'2 · Pull toward your face':index===6?'2 · Raise to the sides':index===7?'2 · Curl with control':'2 · Pull down with control'):index===2?'2 · Lift your hips':index===3?'2 · Curl your legs':'2 · Lower with control';
+  if(state.active==='B'&&index>=5)lower.textContent=['2 · Raise to the sides','2 · Raise into a Y','2 · Extend opposite arm and leg','2 · Lift and hold'][index-5];
   caption.append(start,lower);figure.append(img,caption);
   return figure;
 }
